@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+
+<style type="text/css">
+BODY {overflow-x: hidden;}
+</style>
+<h2 style="text-align:center">John Kim Assignment 3</h2>
+<body>
+<script language="JavaScript1.2">
+
+var trailLength = 5 // Trail of 5 bears
+var path1 = "bear.png" // bear image
+var path2 = "panda.png" // panda image
+
+var standardbody=(document.compatMode=="CSS1Compat")? document.documentElement : document.body //create reference to common "body" across doctypes
+var i,d = 0
+
+function initPath() { 
+	bears = new Array() 
+	
+	bears[parseInt(trailLength)-1] = new Image()
+	bears[parseInt(trailLength)-1].src = path1
+	
+	for (i = 0; i < parseInt(trailLength)-1; i++) {
+		bears[i] = new Image()
+		bears[i].src = path2
+	}
+
+	buffer = new Array() // initialize to zero position
+	for (i = 0; i < bears.length*3; i++) {
+		buffer[i] = 0
+	}
+	for (i = 0; i < bears.length; i++) { 
+		document.write('<div id="bear' + i + '" style="position: absolute; z-Index: 1"><img src="' + bears[i].src + '"></div>')
+	}
+	path()
+}
+function path() { // path generation
+	for (i = bears.length - 1 ; i >=0 ; i--) { // Creates string of bears
+		document.getElementById("bear" + i).style.top = buffer[d]+'px'
+		document.getElementById("bear" + i).style.left = buffer[d+1]+'px'
+		d = d+2
+	}
+	for (i = buffer.length; i >= 2; i--) { // saves previous location
+		buffer[i] = buffer[i-2]
+	}
+	d = 0 
+	var next = setTimeout("path()",100) // recursion 
+}
+function processEvent(e) { 
+	if (window.event) { 
+		buffer[0] = window.event.y+standardbody.scrollTop-180
+		buffer[1] = window.event.x+standardbody.scrollLeft-180
+	} else {
+		buffer[0] = e.pageY+12
+		buffer[1] = e.pageX+12
+	}
+}
+
+	initPath() 
+	document.onmousemove = processEvent // event trigger
+
+</script>
+<head>
+  <meta name="Assignment 3" content="CSCI7000 John Kim">
+  <meta charset="utf-8">
+  <title>Assignment 3</title>
+</head>
+</body>

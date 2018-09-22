@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<body>
+	<canvas id="myCanvas" width="300" height="400"></canvas>
+	<!-- style="border:1px solid #000000;"></canvas> -->
+</body>
+<script> "use strict"
+	window.onload = function() {
+		var canvas = document.getElementById('myCanvas');
+		var context = canvas.getContext('2d');
+     
+        //Draw a face
+        context.beginPath();
+        context.ellipse(150, 210, 95, 85, 0, 0, 2 * Math.PI);
+		context.fillStyle = "#fafafa";
+		context.fill();
+        context.strokeStyle = "black";
+		context.stroke();
+
+        //Draw a pair of eyes
+        context.beginPath();
+        context.ellipse(120, 180, 30, 20, -Math.PI/3, 0, 2 * Math.PI);
+        context.fillStyle = "black";
+		context.fill();
+        context.ellipse(180, 180, 30, 20, Math.PI/3, 0, 2 * Math.PI);
+		context.fillStyle = "black";
+		context.fill();
+
+		context.beginPath();
+		context.arc(130, 180, 8, 0, 2 * Math.PI, false);
+        context.fillStyle = "white";
+		context.fill();
+        context.arc(170, 180, 8, 0, 2 * Math.PI, false);
+        context.fillStyle = "white";
+		context.fill();
+
+
+        
+//        context.beginPath();
+//        context.ellipse(150, 230, 55, 35, 0, 0, 2 * Math.PI);
+//        context.fillStyle = "black";
+//		context.fill();
+
+        context.beginPath();
+        context.moveTo(150,215);
+        context.ellipse(150, 220, 15, 15, 0, 0, 2 * Math.PI);
+        context.closePath();
+        context.fillStyle="black";
+		context.fill();
+
+        context.beginPath();
+		context.arc(150, 180, 71, 0.3 * Math.PI, 0.7 * Math.PI, false);
+        context.strokeStyle = "black";
+		context.stroke();
+        };
+</script>
+<head>
+  <meta name="PandaBear" content="I drew a pandabear">
+  <meta charset="utf-8">
+  <title>Pandabear</title>
+</head>
+</html>
