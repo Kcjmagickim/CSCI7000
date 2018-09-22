@@ -1,4 +1,4 @@
-HelloJS&HTML - Utilized JavaScript and HTML to create a website with hierarchical graphical effects
+HelloJS&HTML - Utilized JavaScript and HTML to create a website with hierarchical graphic effects
 
 Brief:
     Assignment3.html: tracks user's mouse cursor and creates a trail of bears chasing the mouse pointer. 
