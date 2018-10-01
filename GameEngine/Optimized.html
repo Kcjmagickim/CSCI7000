@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+
+<style type="text/css">
+	BODY {overflow-x: hidden;}
+</style>
+<style class="cp-pen-styles">
+    .awesome {
+      font-size:45px;
+      font-weight: bold;
+      -webkit-animation:colorchange 10s infinite;
+    }
+
+    @-webkit-keyframes colorchange {
+      0% {color: red;}
+      20% {color: orange;}
+      40% {color: yellow;}      
+      60% {color: green;}
+      80% {color: blue;}
+      100% {color: purple;}
+    }
+</style>
+<p  class="awesome" style="text-align:center">John Kim Assignment 4</p>
+	<body>
+		<canvas id="myCanvas" width="320" 
+		height="240" style="border:1px solid #000;">
+		 Your browser does not support the canvas element.
+        </canvas>
+		<input type="range"  min="1" max="30" value="30" onchange="updateFrameRate(this.value)"/>
+		<span id="FrameRateLabel">30</span>
+      	<input type="range"  min="10" max="30" value="11" onchange="updateCorrection(this.value)"/>
+		<span id="BufferLength">11</span>
+</body>
+
+<script>
+var maxFps = 30; //max FPS allowed
+var correction = 11;
+var keysdown = {};
+
+window.addEventListener("keydown", function (event) {
+  if (event.defaultPrevented) {
+    return;
+  }
+  keysdown[event.key] = true;
+  event.preventDefault();
+}, true);
+
+window.addEventListener("keyup", function (event) {
+	if (event.defaultPrevented) {
+		return;
+	}
+	keysdown[event.key] = false;
+	event.preventDefault();
+}, true);
+
+
+function updateFrameRate(newFrameRate)
+{
+	maxFps = newFrameRate;
+	document.getElementById("FrameRateLabel").innerHTML=newFrameRate;
+}
+
+function updateCorrection(factor)
+{
+	correction = factor;
+	document.getElementById("BufferLength").innerHTML=factor;
+}
+
+
+
+var frameCount = 0; //count total number of frames rendered
+
+window.onload = function() {
+    var length = 50;
+	var canvas = document.getElementById("myCanvas");
+	var context = canvas.getContext("2d");
+	var panda = {x:canvas.width/2, y:canvas.height/2, scale:0.25};
+	var fps = maxFps; 
+	var framesThisSecond = 0;
+    var bufferx = Array.apply(null, Array(length)).map(Number.prototype.valueOf,canvas.width/2);
+    var buffery = Array.apply(null, Array(length)).map(Number.prototype.valueOf,canvas.height/2);
+    var x;
+    var y;
+
+	setInterval(function() { fps = framesThisSecond; framesThisSecond = 0; }, 1000);
+			
+    var lastFrameTimeMs = 0;
+	requestAnimationFrame(mainLoop);
+			
+	//Game Loop
+	function mainLoop(timestamp) {
+            
+		if (timestamp < lastFrameTimeMs + (1000 / maxFps)) {
+			requestAnimationFrame(mainLoop);
+			return;
+		}
+        delta = timestamp - lastFrameTimeMs;
+	    lastFrameTimeMs = timestamp;
+              
+		processInput();
+		update(delta);
+		draw();
+        requestAnimationFrame(mainLoop);
+	}
+			
+	function processInput() {
+		if(keysdown.ArrowLeft) {
+          if (panda.x<30){}
+          else{
+			panda.x -= 30/fps;
+          }
+        }
+		if(keysdown.ArrowRight) {
+          if (panda.x>295){}
+          else{
+			panda.x += 30/fps;
+          }
+        }
+		if(keysdown.ArrowUp) {
+          if (panda.y<20){}
+          else{
+             panda.y -= 30/fps;
+          }
+        }
+		if(keysdown.ArrowDown) {
+          if (panda.y>215){}
+          else{
+			panda.y += 30/fps;
+          }
+		}
+	}
+			
+	function update(delta) {
+        /*if (frameCount < 10) {
+            console.log("panda.x: " + panda.x);
+        }*/
+        if (bufferx.length > fps*correction/10){
+          while (bufferx.length > fps*correction/10){
+            bufferx.shift();
+            buffery.shift();
+          }
+        }
+        else{
+          while (bufferx.length < fps*correction/10){
+          bufferx.push(panda.x);
+          buffery.push(panda.y);
+          }
+        }
+        bufferx.push(panda.x);
+        buffery.push(panda.y);
+	}
+			
+	function draw() {
+      context.clearRect(0, 0, canvas.width, canvas.height);
+      context.save();
+      x=panda.x-40;
+      y=panda.y-50;
+      draw_panda();
+      draw_bear();
+      context.restore();
+      context.fillText("FPS: " + fps, 10, 10);
+              
+        ++framesThisSecond;
+        ++frameCount;
+        if (frameCount < 10) {
+            console.log("frame: " + frameCount);
+        }
+	}
+			
+	function draw_panda(){
+		context.translate(x,y);
+		context.scale(panda.scale,panda.scale);
+	    context.beginPath();
+		context.ellipse(150, 210, 95, 85, 0, 0, 2 * Math.PI);
+		context.fillStyle = "#fafafa";
+		context.fill();
+		context.strokeStyle = "black";
+		context.stroke();
+
+		context.beginPath();
+		context.ellipse(120, 180, 30, 20, -Math.PI/3, 0, 2 * Math.PI);
+		context.fillStyle = "black";
+		context.fill();
+		context.ellipse(180, 180, 30, 20, Math.PI/3, 0, 2 * Math.PI);
+		context.fillStyle = "black";
+		context.fill();
+
+		context.beginPath();
+		context.arc(130, 180, 8, 0, 2 * Math.PI, false);
+		context.fillStyle = "white";
+		context.fill();
+		context.arc(170, 180, 8, 0, 2 * Math.PI, false);
+		context.fillStyle = "white";
+		context.fill();
+		
+		context.beginPath();
+		context.moveTo(150,215);
+		context.ellipse(150, 220, 15, 15, 0, 0, 2 * Math.PI);
+		context.closePath();
+		context.fillStyle="black";
+		context.fill();
+
+		context.beginPath();
+		context.arc(150, 180, 71, 0.3 * Math.PI, 0.7 * Math.PI, false);
+		context.strokeStyle = "black";
+		context.stroke();
+	}
+  
+  	function draw_bear(){
+        context.translate(bufferx.shift()-(x+40),buffery.shift()-(y+50));
+
+        context.beginPath();
+        context.ellipse(150, 210, 95, 85, 0, 0, 2 * Math.PI);
+        context.fillStyle = "brown";
+		context.fill();
+
+        context.beginPath();
+		context.arc(130, 180, 8, 0, 2 * Math.PI, false);
+        context.fillStyle = "black";
+		context.fill();
+        context.arc(170, 180, 8, 0, 2 * Math.PI, false);
+        context.fillStyle = "black";
+		context.fill();
+        
+        context.beginPath();
+        context.ellipse(150, 230, 55, 35, 0, 0, 2 * Math.PI);
+        context.fillStyle = "#ffcc99";
+		context.fill();
+
+        context.beginPath();
+        context.moveTo(150,215);
+        context.ellipse(150, 220, 15, 15, 0, 0, 2 * Math.PI);
+        context.closePath();
+        context.fillStyle="black";
+		context.fill();
+
+        context.beginPath();
+		context.arc(150, 180, 71, 0.3 * Math.PI, 0.7 * Math.PI, false);
+        context.strokeStyle = "black";
+		context.stroke();
+	}
+};
+</script>
+		
+<head>
+  <meta name="Assignment 4" content="CSCI7000 John Kim">
+  <meta charset="utf-8">
+  <title>Assignment 4</title>
+</head>
