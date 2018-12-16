@@ -1,0 +1,2 @@
+C:\Users\Matthew\Documents\MixedRealityIntroduction\Apps\GeneratedProjects\UWP\Assembly-CSharp\Assembly-CSharp.csproj;x86
+C:\Users\Matthew\Documents\MixedRealityIntroduction\Apps\MixedRealityIntroduction\MixedRealityIntroduction.csproj;x86
